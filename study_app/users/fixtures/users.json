@@ -1,0 +1,23 @@
+[
+  {
+    "model": "users.customuser",
+    "pk": 1,
+    "fields": {
+      "password": "pbkdf2_sha256$720000$D9hXVzjuj0Ysq3VIk3BhLK$8/Q1wA6uES34OszIeKfQz02cjLFd9GP3pkw3wAYMaxQ=",
+      "last_login": "2024-03-25T12:05:23.057Z",
+      "is_superuser": true,
+      "username": "herrifly",
+      "first_name": "",
+      "last_name": "",
+      "is_staff": true,
+      "is_active": true,
+      "date_joined": "2024-03-25T12:05:12.526Z",
+      "email": "123@mail.ru",
+      "phone": "",
+      "city": "",
+      "avatar": "",
+      "groups": [],
+      "user_permissions": []
+    }
+  }
+]

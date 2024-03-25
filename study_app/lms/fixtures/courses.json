@@ -1,0 +1,20 @@
+[
+  {
+    "model": "lms.course",
+    "pk": 1,
+    "fields": {
+      "title": "Python",
+      "preview": "",
+      "description": "Middle"
+    }
+  },
+  {
+    "model": "lms.course",
+    "pk": 2,
+    "fields": {
+      "title": "C++",
+      "preview": "",
+      "description": "Junior course"
+    }
+  }
+]
