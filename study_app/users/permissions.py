@@ -1,9 +1,15 @@
-from rest_framework import permissions
+from rest_framework.permissions import BasePermission
+
+from users.models import UserRoles
 
 
-class IsOwnerOrReadOnly(permissions.BasePermission):
+class IsModerator(BasePermission):
+
+    def has_permission(self, request, view):
+        return request.user.role == UserRoles.MODERATOR
+
+
+class IsOwner(BasePermission):
 
     def has_object_permission(self, request, view, obj):
-        if request.method in permissions.SAFE_METHODS:
-            return True
-        return obj.owner == request.user
+        return request.user == obj.owner

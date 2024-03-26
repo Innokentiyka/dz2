@@ -1,8 +1,13 @@
 from django.db import models
 from django.conf import settings
 from django.contrib.auth.models import AbstractUser
+from django.utils.translation import gettext_lazy as _
+from study_app.lms.models import Course, Lesson
 
-from lms.models import Course, Lesson
+
+class UserRoles(models.TextChoices):
+    MEMBER = 'member', _('member')
+    MODERATOR = 'moderator', _('moderator')
 
 
 class CustomUser(AbstractUser):
@@ -13,6 +18,13 @@ class CustomUser(AbstractUser):
 
     USERNAME_FIELD = 'email'
     REQUIRED_FIELDS = ['username']
+
+    role = models.CharField(max_length=9, choices=UserRoles.choices,
+                            default=UserRoles.MEMBER)
+
+    class Meta:
+        verbose_name = 'пользователь'
+        verbose_name_plural = 'пользователи'
 
 
 class Payment(models.Model):
