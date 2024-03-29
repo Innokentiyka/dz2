@@ -11,16 +11,20 @@ class UserRoles(models.TextChoices):
 
 
 class CustomUser(AbstractUser):
-    email = models.EmailField(unique=True)
-    phone = models.CharField(max_length=20)
-    city = models.CharField(max_length=100)
-    avatar = models.ImageField(upload_to='avatars/')
+    username = None
+    email = models.EmailField(unique=True, verbose_name='почта пользователя')
+    phone = models.CharField(max_length=35, verbose_name='телефон', blank=True, null=True)
+    city = models.CharField(max_length=100, blank=True, null=True, verbose_name='город')
+    avatar = models.ImageField(upload_to='users/', verbose_name='аватар', blank=True, null=True)
 
-    USERNAME_FIELD = 'email'
-    REQUIRED_FIELDS = ['username']
+    USERNAME_FIELD = "email"
+    REQUIRED_FIELDS = ['']
 
     role = models.CharField(max_length=9, choices=UserRoles.choices,
                             default=UserRoles.MEMBER)
+
+    def __str__(self):
+        return f'{self.email}'
 
     class Meta:
         verbose_name = 'пользователь'
