@@ -1,5 +1,6 @@
 from rest_framework import generics, viewsets
 
+from users.models import UserRoles
 from users.permissions import IsOwner, IsModerator
 from .models import Course, Lesson
 from .serializers import CourseSerializer, LessonSerializer
@@ -26,19 +27,39 @@ class CourseViewSet(viewsets.ModelViewSet):
         serializer.save(owner=self.request.user)
 
 
-class LessonListCreate(generics.ListCreateAPIView):
-    permission_classes = (IsAuthenticated, ~IsModerator)
+class LessonListView(generics.ListAPIView):
+    permission_classes = [IsAuthenticated]
     queryset = Lesson.objects.all()
-    serializer_class = LessonSerializer
 
-    def perform_create(self, serializer):
-        serializer.save(owner=self.request.user)
+    serializer_class = LessonSerializer
 
     def get_queryset(self):
-        return super().get_queryset().filter(owner=self.request.user)
+        return super().get_queryset().filter(
+            owner=self.request.user) if self.request.user.role == UserRoles.MEMBER else super().get_queryset()
 
 
-class LessonRetrieveUpdateDestroy(generics.RetrieveUpdateDestroyAPIView):
-    permission_classes = (IsAuthenticated, IsOwner)
-    queryset = Lesson.objects.all()
+class LessonCreateView(generics.CreateAPIView):
     serializer_class = LessonSerializer
+    permission_classes = [IsAuthenticated & ~IsModerator]
+
+    def perform_create(self, serializer):
+        new_lesson = serializer.save()
+        new_lesson.owner = self.request.user
+        new_lesson.save()
+
+
+class LessonDetailView(generics.RetrieveAPIView):
+    serializer_class = LessonSerializer
+    queryset = Lesson.objects.all()
+    permission_classes = [IsAuthenticated & (IsModerator | IsOwner)]
+
+
+class LessonDestroyView(generics.DestroyAPIView):
+    queryset = Lesson.objects.all()
+    permission_classes = [IsAuthenticated & IsOwner]
+
+
+class LessonUpdateView(generics.UpdateAPIView):
+    serializer_class = LessonSerializer
+    queryset = Lesson.objects.all()
+    permission_classes = [IsAuthenticated & (IsModerator | IsOwner)]
