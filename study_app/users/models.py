@@ -39,3 +39,12 @@ class Payment(models.Model):
 
     course = models.ForeignKey(Course, on_delete=models.SET_NULL, null=True, blank=True)
     lesson = models.ForeignKey(Lesson, on_delete=models.SET_NULL, null=True, blank=True)
+
+    payment_url = models.URLField(max_length=400, null=True, blank=True,
+                                  verbose_name='ссылка на оплату')
+    payment_id = models.CharField(max_length=100, null=True, blank=True,
+                                  verbose_name='id платежа')
+
+    class Meta:
+        verbose_name = 'платеж'
+        verbose_name_plural = 'платежи'
