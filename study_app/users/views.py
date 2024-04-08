@@ -33,25 +33,21 @@ class UserUpdateDeleteView(generics.RetrieveUpdateDestroyAPIView):
 
 
 class PaymentListView(generics.ListAPIView):
-    """
-    Класс для формирования списка платежей
-    """
+
     serializer_class = PaymentSerializer
     queryset = Payment.objects.all()
-    search_fields = ['paid_lesson', 'paid_course', 'method_payment']
-    ordering_fields = ('date_of_payment',)
+    search_fields = ['lesson', 'course', 'method_payment']
+    ordering_fields = ('payment_date',)
     filter_backends = [DjangoFilterBackend, filters.OrderingFilter]
-    filterset_fields = ('user', 'date_of_payment',
-                        'paid_lesson', 'paid_course')
-    filter_fields = ('user', 'date_of_payment',
-                     'paid_lesson', 'paid_course')
+    filterset_fields = ('user', 'payment_date',
+                        'lesson', 'course')
+    filter_fields = ('user', 'payment_date',
+                     'lesson', 'course')
     permission_classes = [IsOwnerOrStaff]
 
 
 class PaymentCreateView(generics.CreateAPIView):
-    """
-    Класс для создания нового платежа
-    """
+
     serializer_class = PaymentSerializer
     permission_classes = [IsAuthenticated, ~IsModerator]
 
@@ -65,27 +61,21 @@ class PaymentCreateView(generics.CreateAPIView):
 
 
 class PaymentDetailView(generics.RetrieveAPIView):
-    """
-    Класс для просмотра подробной информации по платежу
-    """
+
     serializer_class = PaymentSerializer
     queryset = Payment.objects.all
     permission_classes = [IsOwnerOrStaff]
 
 
 class PaymentUpdateView(generics.UpdateAPIView):
-    """
-    Класс для обновления данных по платежу
-    """
+
     serializer_class = PaymentSerializer
     queryset = Payment.objects.all
     permission_classes = [IsOwnerOrStaff]
 
 
 class PaymentDestroyView(generics.DestroyAPIView):
-    """
-    Класс для удаления платежа
-    """
+
     serializer_class = PaymentSerializer
     queryset = Payment.objects.all
     permission_classes = [IsOwnerOrStaff]

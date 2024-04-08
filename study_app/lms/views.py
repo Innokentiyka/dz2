@@ -9,6 +9,7 @@ from rest_framework.permissions import IsAuthenticated
 from rest_framework import permissions
 from rest_framework.response import Response
 from .paginators import CoursePagination, LessonPagination
+from lms.tasks import send_email_for_update_course
 
 
 class CourseViewSet(viewsets.ModelViewSet):
@@ -29,6 +30,12 @@ class CourseViewSet(viewsets.ModelViewSet):
 
     def perform_create(self, serializer):
         serializer.save(owner=self.request.user)
+
+    def perform_update(self, serializer):
+
+        course = serializer.save()
+        course_id = course.id
+        send_email_for_update_course.delay(course_id)
 
 
 class LessonListView(generics.ListAPIView):
@@ -97,3 +104,5 @@ class SubscriptionAPIView(APIView):
             message = 'Вы подписались на курс.'
 
         return Response({"message": message})
+
+
