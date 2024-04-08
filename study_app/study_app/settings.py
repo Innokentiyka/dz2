@@ -19,6 +19,10 @@ env.read_env()
 
 STRIPE_PUBLIC_KEY = env("STRIPE_PUBLIC_KEY")
 STRIPE_SECRET_KEY = env("STRIPE_SECRET_KEY")
+EMAIL_HOST_USER = env('EMAIL_HOST_USER')
+
+
+
 
 # Build paths inside the project like this: BASE_DIR / 'subdir'.
 BASE_DIR = Path(__file__).resolve().parent.parent
@@ -49,6 +53,7 @@ INSTALLED_APPS = [
     'django_filters',
     'rest_framework_simplejwt',
     'drf_yasg',
+    'django_celery_beat',
 ]
 
 MIDDLEWARE = [
@@ -140,7 +145,7 @@ AUTH_PASSWORD_VALIDATORS = [
 
 LANGUAGE_CODE = 'en-us'
 
-TIME_ZONE = 'UTC'
+TIME_ZONE = 'Europe/Moscow'
 
 USE_I18N = True
 
@@ -155,3 +160,32 @@ STATIC_URL = 'static/'
 # https://docs.djangoproject.com/en/5.0/ref/settings/#default-auto-field
 
 DEFAULT_AUTO_FIELD = 'django.db.models.BigAutoField'
+
+CELERY_BROKER_URL = env('CELERY_BROKER_URL')
+
+CELERY_RESULT_BACKEND = env('CELERY_RESULT_BACKEND')
+
+CELERY_TIMEZONE = TIME_ZONE
+
+CELERY_TASK_TRACK_STARTED = True
+
+CELERY_TASK_TIME_LIMIT = 30 * 60
+
+CELERY_BEAT_SCHEDULE = {
+    'check_user_activity': {
+        'task': 'users.tasks.check_user_activity',
+        'schedule': timedelta(days=1),
+    }
+}
+
+CACHE_ENABLED = env('CACHE_ENABLED') == 'True'
+
+if CACHE_ENABLED:
+    CACHES = {
+        "default": {
+            "BACKEND": "django.core.cache.backends.redis.RedisCache",
+            "LOCATION": env('CACHE_LOCATION'),
+            "TIMEOUT": 60
+
+        }
+    }
